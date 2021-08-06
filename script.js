@@ -22,7 +22,7 @@ const data = [
 // A function to prepare the data that'll be displayed in the chart
 const prepareData = () => {
   
-  const dataWithTotal = [];
+  let dataWithTotal = [];
 
   // Loop over our data and calculate the total 
   data.forEach((value,index)=> {
