@@ -19,12 +19,12 @@ const data = [
   }
 ];
 
-// A function to prepare the data that'll be displayed in the chart
+/** A function to prepare the data that'll be displayed in the chart **/ 
 const prepareData = () => {
   
   let dataWithTotal = [];
 
-  // Loop over our data and calculate the total 
+  /** Loop over our data and calculate the total **/ 
   data.forEach((value,index)=> {
       const temp = value;
       total=0; 
@@ -38,7 +38,7 @@ const prepareData = () => {
       dataWithTotal.push(temp);
   });
     
-    // Get th different periods
+    /**  Get th different periods **/
     const labels =[];
     for (let i = 0; i < dataWithTotal.length; i++) {
       labels.push(dataWithTotal[i]['period']);
@@ -88,7 +88,7 @@ const generateGraph = (data) => {
   });
 }
 
-// Call the functions to prepare the data and display the graph 
+/** Call the functions to prepare the data and display the graph  **/ 
 const preparedData= prepareData();
 console.log(preparedData);
 generateGraph(preparedData);
