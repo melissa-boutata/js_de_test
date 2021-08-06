@@ -1,4 +1,4 @@
-var data = [
+const data = [
   {
     "Cheese": 22.2,
     "CHOCOLATE": 10.3,
@@ -19,34 +19,43 @@ var data = [
   }
 ];
 
-function generateGraph() {
-  var dataWithTotal = [];
+// A function to prepare the data that'll be displayed in the chart
+const prepareData = () => {
   
-  for (var i = 0; i < data.length; i++) {
-    var temp = data[i];
-    total = 0;
-    for (var key in data[i]) {
-      if(key !== "period") {
-        total += data[i][key];
+  const dataWithTotal = [];
+
+  // Loop over our data and calculate the total 
+  data.forEach((value,index)=> {
+      const temp = value;
+      total=0; 
+
+      for (let key in value) {
+        if(key !== "period") {
+          total += value[key];
+        }
       }
+      temp.total = total / 3;
+      dataWithTotal.push(temp);
+  });
+    
+    // Get th different periods
+    const labels =[];
+    for (let i = 0; i < dataWithTotal.length; i++) {
+      labels.push(dataWithTotal[i]['period']);
     }
-    temp.total = total / 3;
-    dataWithTotal.push(temp);
-  }
+
+  return {labels, dataWithTotal};
+}
+
+const generateGraph = (data) => {
   
-  var labels = [];
+  const graphValues = [];
+  const keys = Object.keys(data.dataWithTotal[0]);
   
-  for (var i = 0; i < dataWithTotal.length; i++) {
-    labels.push(dataWithTotal[i]['period']);
-  }
-  
-  var graphValues = [];
-  var keys = Object.keys(dataWithTotal[0]);
-  
-  for (var i = 0; i < keys.length; i++) {
-    if(keys[i] !== "period") {
-      var temp = {
-        label: keys[i], 
+  keys.forEach((key,index)=> {
+    if(key !== "period") {
+     let temp = {
+        label: key, 
         data: [],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
@@ -61,23 +70,25 @@ function generateGraph() {
           'rgba(75, 192, 192, 1)'
         ], 
       };
-  
-      for (var n = 0; n < dataWithTotal.length; n++) {
-        temp.data.push(dataWithTotal[n][keys[i]])
-      }
-      
+      for (let n = 0; n < data.dataWithTotal.length; n++) {
+         temp.data.push(data.dataWithTotal[n][key])
+       }
+        
       graphValues.push(temp);
     }
-  }
+  });
   
-  var ctx = document.getElementById('myChart').getContext('2d');
-  var myChart = new Chart(ctx, {
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: labels,
+      labels: data.labels,
       datasets: graphValues
     }
   });
 }
 
-generateGraph();
+// Call the functions to prepare the data and display the graph 
+const preparedData= prepareData();
+console.log(preparedData);
+generateGraph(preparedData);
