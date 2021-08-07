@@ -1,4 +1,4 @@
-const data = [
+const dataset = [
   {
     "Cheese": 22.2,
     "CHOCOLATE": 10.3,
@@ -19,21 +19,29 @@ const data = [
   }
 ];
 
+const countTotal=(value)=> {
+
+  for (let key in value) {
+    if(key !== "period") {
+     total += value[key]; 
+    }
+  }
+  return total
+}
+
 /** A function to prepare the data that'll be displayed in the chart **/ 
-const prepareData = () => {
+const prepareData = (data) => {
   
   let dataWithTotal = [];
 
   /** Loop over our data and calculate the total **/ 
-  data.forEach((value,index)=> {
+  
+  data.map(value=> {
       const temp = value;
-      total=0; 
-
-      for (let key in value) {
-        if(key !== "period") {
-          total += value[key];
-        }
-      }
+      total=0;
+     
+      total+=countTotal(value)
+      
       temp.total = total / 3;
       dataWithTotal.push(temp);
   });
@@ -52,7 +60,7 @@ const generateGraph = (data) => {
   const graphValues = [];
   const keys = Object.keys(data.dataWithTotal[0]);
   
-  keys.forEach((key,index)=> {
+  keys.map(key=> {
     if(key !== "period") {
      let temp = {
         label: key, 
@@ -89,6 +97,5 @@ const generateGraph = (data) => {
 }
 
 /** Call the functions to prepare the data and display the graph  **/ 
-const preparedData= prepareData();
-console.log(preparedData);
+const preparedData= prepareData(dataset);
 generateGraph(preparedData);
