@@ -93,7 +93,7 @@ const generateGraph = (preparedData) => {
     data: {
       // The labels in the graph are the 'period' element of each record in the dataset
       labels: preparedData.map(element => element.period),
-      datasets: graphValuess
+      datasets: graphValues
     }
   });
 }
