@@ -88,12 +88,12 @@ const generateGraph = (preparedData) => {
   // preparedData.forEach(record => graphValue.data.push(record[graphValue.label]))
 
   const context = document.getElementById('myChart').getContext('2d');
-  const myChart = new Chart(context, {
+  const myChart = new Chart(context,{
     type: 'line',
     data: {
       // The labels in the graph are the 'period' element of each record in the dataset
       labels: preparedData.map(element => element.period),
-      datasets: graphValues
+      datasets: graphValuess
     }
   });
 }
