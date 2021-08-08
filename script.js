@@ -19,78 +19,80 @@ const dataset = [
   }
 ];
 
-const countTotal=(value)=> {
-
-  for (let key in value) {
+/**
+ * calculates the average of the numerical values inside a record in the dataset
+ * @param {*} value A record from the dataset
+ * @returns the calculated average of the values of the passed record
+ */
+const calculateAverage = (record) => {
+  let average = 0;
+  for (let key in record) {
     if(key !== "period") {
-     total += value[key]; 
+     average += record[key] / 3; 
     }
   }
-  return total
+  return average
 }
 
-/** A function to prepare the data that'll be displayed in the chart **/ 
-const prepareData = (data) => {
-  
-  let dataWithTotal = [];
-
-  /** Loop over our data and calculate the total **/ 
-  
-  data.map(value=> {
-      const temp = value;
-      total=0;
-     
-      total+=countTotal(value)
-      
-      temp.total = total / 3;
-      dataWithTotal.push(temp);
-  });
-    
-    /**  Get th different periods **/
-    const labels =[];
-    for (let i = 0; i < dataWithTotal.length; i++) {
-      labels.push(dataWithTotal[i]['period']);
-    }
-
-  return {labels, dataWithTotal};
+/**
+ * Prepares the data by adding a new element to each record in the dataset.
+ * The element that is added for now is 'Average', its value is obtained using calculateAverage()
+ * @param {*} rawData Array of raw data
+ * @returns Array of prepared data
+ */ 
+const prepareData = (rawData) => {
+  return rawData.map(record => ({...record, Average: calculateAverage(record)}));
 }
 
-const generateGraph = (data) => {
-  
-  const graphValues = [];
-  const keys = Object.keys(data.dataWithTotal[0]);
-  
-  keys.map(key=> {
-    if(key !== "period") {
-     let temp = {
-        label: key, 
-        data: [],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)'
-        ], 
-      };
-      for (let n = 0; n < data.dataWithTotal.length; n++) {
-         temp.data.push(data.dataWithTotal[n][key])
-       }
-        
-      graphValues.push(temp);
+/**
+ * Generates the graph based on the values passed through props
+ * @param {*} preparedData The data prepared using prepareData function
+ */
+const generateGraph = (preparedData) => {
+  let graphValues = [
+    {
+      label: "Cheese",
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      borderColor: 'rgba(255, 99, 132, 1)',
+      data: [],
+    },
+    {
+      label: "CHOCOLATE",
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      data: [],
+    },
+    {
+      label: "Impulse",
+      backgroundColor: 'rgba(255, 206, 86, 0.2)',
+      borderColor: 'rgba(255, 206, 86, 1)',
+      data: [],
+    },
+    {
+      label: "Average",
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      data: [],
     }
-  });
+  ];
   
-  const ctx = document.getElementById('myChart').getContext('2d');
-  const myChart = new Chart(ctx, {
+  for (const graphValue of graphValues) {
+    const {label} = graphValue;
+    for (const record of preparedData) {
+      // Fill the array 'data' in graphValues with the values of the element in dataset records that 
+      // has the same name as the label of the graphValues
+      graphValue.data.push(record[label]);
+    }
+  }
+  // The for-function above could be replaced by the line below, but we will keep the for-function for readability 
+  // preparedData.forEach(record => graphValue.data.push(record[graphValue.label]))
+
+  const context = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(context, {
     type: 'line',
     data: {
-      labels: data.labels,
+      // The labels in the graph are the 'period' element of each record in the dataset
+      labels: preparedData.map(element => element.period),
       datasets: graphValues
     }
   });
